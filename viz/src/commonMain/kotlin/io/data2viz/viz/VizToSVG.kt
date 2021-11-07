@@ -53,7 +53,7 @@ internal fun buildSvgString(build: SvgStringBuilder.() -> Unit): String = buildS
         override val gradients: MutableList<GradientsRenderer> = mutableListOf()
     }
     svgStringBuilder.apply {
-        builder.append("<?xml version=\"${1.0 as Number}\"?>\n")
+        builder.append("<?xml version=\"1.0\"?>\n")
         build()
     }
 }
@@ -107,7 +107,11 @@ internal object AttributesBuilder {
     }
 
     // adds simple attribute like width="100.0"
-    fun SvgStringBuilder.add(key: String, value: Number) {
+    fun SvgStringBuilder.add(key: String, value: Double) {
+        builder.append("$key=\"${value}\" ")
+    }
+
+    fun SvgStringBuilder.add(key: String, value: Int) {
         builder.append("$key=\"$value\" ")
     }
 
@@ -206,7 +210,11 @@ internal object StylesBuilder {
         builder.append("$key:$value;")
     }
 
-    fun SvgStringBuilder.add(key: String, value: Number) {
+    fun SvgStringBuilder.add(key: String, value: Double) {
+        builder.append("$key:${value};")
+    }
+
+    fun SvgStringBuilder.add(key: String, value: Int) {
         builder.append("$key:$value;")
     }
 
@@ -249,8 +257,12 @@ internal object StylesBuilder {
 // calling add() adds a new transformation
 internal object TransformBuilder {
 
-    fun SvgStringBuilder.add(transformType: String, vararg values: Number) {
+    fun SvgStringBuilder.add(transformType: String, vararg values: Int) {
         builder.append("$transformType(${values.joinToString(" ")}) ")
+    }
+
+    fun SvgStringBuilder.add(transformType: String, vararg values: Double) {
+        builder.append("$transformType(${values.joinToString(" ") { it.toString() }}) ")
     }
 
     fun SvgStringBuilder.addTransformsFor(node: HasTransform) {
